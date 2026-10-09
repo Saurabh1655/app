@@ -1,0 +1,77 @@
+import 'package:flutter/material.dart';
+
+void main() => runApp(const MyApp());
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(home: const CrudScreen());
+  }
+}
+
+class CrudScreen extends StatefulWidget {
+  const CrudScreen({super.key});
+
+  @override
+  State<CrudScreen> createState() => _CrudScreenState();
+}
+
+class _CrudScreenState extends State<CrudScreen> {
+  final List<String> items = [];
+  final _controller = TextEditingController();
+
+  void _addItem() {
+    setState(() {
+      items.add(_controller.text);
+      _controller.clear();
+    });
+  }
+
+  void _editItem(int index) {
+    setState(() {
+      items[index] = "${items[index]} (Edited)";
+    });
+  }
+
+  void _deleteItem(int index) {
+    setState(() {
+      items.removeAt(index);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("CRUD Example")),
+      body: Column(
+        children: [
+          TextField(controller: _controller),
+          ElevatedButton(onPressed: _addItem, child: const Text("Add")),
+          Expanded(
+            child: ListView.builder(
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(items[index]),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                          icon: const Icon(Icons.edit),
+                          onPressed: () => _editItem(index)),
+                      IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () => _deleteItem(index)),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
